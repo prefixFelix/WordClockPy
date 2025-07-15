@@ -20,7 +20,8 @@ def connect_wifi():
 
 
 connect_wifi()
+# print("[>] Checking for updates...")
 # Pull files if version changed
-if not git_fetch.status():
-    git_fetch.pull()
+# if not git_fetch.status():
+#     git_fetch.pull()
 gc.collect()

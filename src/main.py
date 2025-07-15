@@ -5,19 +5,20 @@ import asyncio
 import json
 import dev_config as config
 import wordclock
+import git_fetch
 
 
 def set_time():
     """ Sync NTP """
     ntptime.settime()  # todo can fail (OSError: [Errno 116] ETIMEDOUT)
-    print(f'[>] Current UTC time: {time.localtime()[3]}:{time.localtime()[4]}')
+    print(f'[+] Current UTC time: {time.localtime()[3]}:{time.localtime()[4]}')
     dst_status = eu_dst_active(time.localtime())
     if dst_status:
         update_config_file({"dst": 1})
     else:
         update_config_file({"dst": 0})
-    print(f'[>] DST: {dst_status}')
-    print(f'[>] Local time: {local_hour()}:{time.localtime()[4]}')
+    print(f'[+] DST: {dst_status}')
+    print(f'[+] Local time: {local_hour()}:{time.localtime()[4]}')
 
 
 def eu_dst_active(td):
@@ -39,7 +40,7 @@ def local_hour():
     return (time.localtime()[3] + config.time_zone + config.dst) % 24
 
 
-def update_config_file(updates, filename="config.py"):
+def update_config_file(updates, filename="dev_config.py"):
     """ Update the config file at runtime """
     # Read the current file
     with open(filename, 'r') as file:
@@ -70,9 +71,9 @@ def update_config_file(updates, filename="config.py"):
 
 def reload_config():
     """ Reimport config.py """
-    sys.modules.pop("config")
+    sys.modules.pop("dev_config")
     global config
-    import config
+    import dev_config as config
 
 
 
@@ -120,8 +121,14 @@ async def main():
 
 
 if __name__ == '__main__':
+    print("[>] Checking for updates...")
+    if not git_fetch.status():
+        print("[>] Pulling files form git. This can take a while...")
+        git_fetch.pull()
+
     wc = wordclock.WordClock()
     set_time()
+
     asyncio.run(main())
 
     """

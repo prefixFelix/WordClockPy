@@ -5,7 +5,7 @@ import os
 
 user = 'prefixFelix'
 repo = 'WordClockPy'
-ignore_files = ['git-fetch.py', 'config.py', 'boot.py']
+ignore_files = ['git_fetch.py', 'config.py', 'boot.py']
 
 
 def status():
@@ -16,10 +16,10 @@ def status():
         remote_version = r.text.strip()
         r.close()
 
-        print(f'Local: {config.version}, Remote: {remote_version}')
+        print(f'[+] Local: {config.version}, Remote: {remote_version}')
         return config.version == remote_version
     except Exception as e:
-        print(f'Status check failed: {e}')
+        print(f'[!] Status check failed: {e}')
         return True
 
 
@@ -55,10 +55,10 @@ def pull():
         with open('dev_config.py', 'w') as f:
             f.writelines(lines)
 
-        print(f'Pull completed. Updated to version: {new_version}')
+        print(f'[+] Pull completed. Updated to version: {new_version}')
 
     except Exception as e:
-        print(f'Pull failed: {e}')
+        print(f'[!] Pull failed: {e}')
 
 
 def _delete_local_files(path):
@@ -98,10 +98,10 @@ def _download_file(url, local_path):
         with open(local_path, 'w') as f:
             f.write(r.text)
         r.close()
-        print(f'Downloaded: {local_path}')
+        print(f'[+] Downloaded: {local_path}')
 
     except Exception as e:
-        print(f'Failed to download {local_path}: {e}')
+        print(f'[!] Failed to download {local_path}: {e}')
 
 
 def _is_dir(path):
