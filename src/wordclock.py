@@ -1,7 +1,7 @@
 import time
 import machine
 import neopixel
-import config
+import dev_config as config
 
 correction = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

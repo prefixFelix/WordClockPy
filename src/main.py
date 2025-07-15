@@ -1,26 +1,14 @@
 import sys
-import network
 import ntptime
 import time
 import asyncio
 import json
-import config
+import dev_config as config
 import wordclock
 
 
-def connect():
-    """ Connect to WiFi / sync NTP """
-    # Disable AP - why???
-    ap_if = network.WLAN(network.AP_IF)
-    ap_if.active(False)
-    sta_if = network.WLAN(network.STA_IF)
-    sta_if.active(True)
-    sta_if.connect(config.wifi_ssid, config.wifi_passwd)
-    print(f'\n\n\n[>] Connecting to {config.wifi_ssid}', end='')
-    while not sta_if.isconnected():
-        print('.', end='')
-        time.sleep(0.2)
-    print(f'connected with the IP http://{sta_if.ifconfig()[0]}')
+def set_time():
+    """ Sync NTP """
     ntptime.settime()  # todo can fail (OSError: [Errno 116] ETIMEDOUT)
     print(f'[>] Current UTC time: {time.localtime()[3]}:{time.localtime()[4]}')
     dst_status = eu_dst_active(time.localtime())
@@ -133,7 +121,7 @@ async def main():
 
 if __name__ == '__main__':
     wc = wordclock.WordClock()
-    connect()
+    set_time()
     asyncio.run(main())
 
     """
