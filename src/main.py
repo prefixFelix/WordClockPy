@@ -83,7 +83,7 @@ async def run_clock():
     while True:
         # Update clock
         print('A', end='')
-        wc.update_display(time.localtime()[3], time.localtime()[4])
+        wc.update_display(local_hour(), time.localtime()[4])
 
         # Resync time every hour
         if time.localtime()[4] == 0:
@@ -96,7 +96,7 @@ async def run_clock():
                 print(f'[!] NTP miss: {ntp_miss}')
 
         # Check every day at 2:00 if dst is active (summer -> winter wrong for 1h!)
-        if time.localtime()[3] == 2 and time.localtime()[4] == 0:
+        if local_hour() == 2 and time.localtime()[4] == 0:
             if eu_dst_active(time.localtime()):
                 update_config_file({"dst": 1})
             else:
@@ -121,11 +121,14 @@ async def main():
 
 
 if __name__ == '__main__':
-    print("[>] Checking for updates...")
-    if not git_fetch.status():
-        print("[>] Pulling files form git. This can take a while...")
-        git_fetch.pull()
-
+    # import os; os.remove('boot.py')
+    try:
+        print("[>] Checking for updates...")
+        if config.ota_enabled and not git_fetch.status():
+            print("[>] Pulling files form git. This can take a while...")
+            git_fetch.pull()
+    except Exception as e:
+        print(f'[!] {e}')
     wc = wordclock.WordClock()
     set_time()
 

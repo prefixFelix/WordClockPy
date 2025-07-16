@@ -25,7 +25,7 @@ correction = [
 class WordClock:
     def __init__(self):
         self.data_pin = machine.Pin(config.data_pin, machine.Pin.OUT)
-        self.strip = neopixel.NeoPixel(self.data_pin, config.x_max * config.y_max, bpp=len(config.led_type))
+        self.strip = neopixel.NeoPixel(self.data_pin, (config.x_max * config.y_max) + 4, bpp=len(config.led_type))
 
         self.minute_indices = self.get_minute_indices()
         self.display = set()
@@ -40,7 +40,7 @@ class WordClock:
                 corners[3] = corners[2]
                 corners[2] = tmp
 
-            # Reorient the corner indices
+            # Reorient the corner indices todo reverse 3 and 4th minute
             if config.first_led == 'bottom_left':
                 return [corners[1], corners[3], corners[0], corners[2]]
             if config.first_led == 'bottom_right':
@@ -73,14 +73,16 @@ class WordClock:
         cords = []
         minute_indi_l = set()
 
-        # Set hour
+        # Set hour - AM/PM
         if hour > 12:
             hour = hour - 12
         if hour == 0:
             hour = 12
 
-        if minute >= 30:
+        # Minute hour switch
+        if minute >= 25:
             hour += 1
+        # AM/PM switch
         if hour > 12:
             hour = 1
         cords.append(config.language[f'hour_{hour}'])
@@ -91,7 +93,7 @@ class WordClock:
         if 0 <= minute < 5:
             cords.append(config.language['o_clock'])
 
-        # Set minute (direct indices, not cords!) todo
+        # Set minute (direct indices, not cords!) todo maybe switch
         if config.show_minutes:
             minute_digit = minute % 10
             if minute_digit in (0, 5):  # 0, 5
@@ -224,8 +226,13 @@ class WordClock:
             return tuple(round(brightness * val) for val in color)
 
     def update_display(self, hour, minute):
+        print(f"\n[#] <======> {hour}:{minute} <======>")
+
         # Convert time to word coordinates and minute indices
         word_cords, minute_indices = self.time_to_word_cords(hour, minute)
+        print(f'\t[~] Word cords: {word_cords}')
+        print(f'\t[~] Minute indices: {minute_indices}')
+
         # Iterate over words and add indices to new display list
         new_display = set()
 
@@ -233,13 +240,18 @@ class WordClock:
         if config.on and config.power:
             for word in word_cords:
                 new_display.update(self.word_cords_to_indices(word))
+            print(f'\t[~] Word indices: {new_display}')
             # Add minutes
             new_display.update(minute_indices)
 
+        print(f'\t[~] Old indices: {self.display}')
         # Check which leds to be turned on / off
         display_on = new_display.difference(self.display)  # Also copy?
         display_off = self.display.difference(new_display)  # Also copy?
         self.display = new_display.copy()
+
+        print(f'\t[~] On indices: {display_on}')
+        print(f'\t[~] Off indices: {display_off}')
 
         if config.transition:
             if config.transition == 'concurrent_fade':

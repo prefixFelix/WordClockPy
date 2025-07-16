@@ -1,6 +1,5 @@
 import network
 import time
-import git_fetch
 import dev_config as config
 import gc
 
@@ -20,8 +19,4 @@ def connect_wifi():
 
 
 connect_wifi()
-# print("[>] Checking for updates...")
-# Pull files if version changed
-# if not git_fetch.status():
-#     git_fetch.pull()
 gc.collect()
