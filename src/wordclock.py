@@ -110,16 +110,17 @@ class WordClock:
         # Set preposition
         if 0 <= minute < 5:  # 0
             pass
-        if 30 <= minute < 35:  # 30
-            cords.append(config.language['half'])
         if 5 <= minute < 25:  # 5-20
             cords.append(config.language['after'])
-        if 35 <= minute < 40:  # 35
-            cords.extend([config.language['after'], config.language['half']])
-        if 35 <= minute < 60:  # 40-55
-            cords.append(config.language['before'])
         if 25 <= minute < 30:  # 25
             cords.extend([config.language['before'], config.language['half']])
+        if 30 <= minute < 35:  # 30
+            cords.append(config.language['half'])
+        if 35 <= minute < 40:  # 35
+            cords.extend([config.language['after'], config.language['half']])
+        if 40 <= minute < 60:  # 40-55
+            cords.append(config.language['before'])
+
 
         # Set 5 minutes
         if 0 <= minute < 5 or 30 <= minute < 35:  # 0, 30
