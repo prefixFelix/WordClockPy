@@ -26,11 +26,12 @@ def set_time():
             time.sleep(1)
     
     dst_status = eu_dst_active(time.localtime())
-    if dst_status:
-        update_config_file({"dst": 1})
+    dst_value = 1 if dst_status else 0
+    if config.dst != dst_value:
+        update_config_file({"dst": dst_value})
+        print(f'[+] DST updated: {dst_status}')
     else:
-        update_config_file({"dst": 0})
-    print(f'[+] DST: {dst_status}')
+        print(f'[+] DST: {dst_status}')
     print(f'[+] Local time: {local_hour()}:{time.localtime()[4]}')
 
 
@@ -131,20 +132,23 @@ async def run_clock():
 
         # Check every day at 2:00 if dst is active (summer -> winter wrong for 1h!)
         if local_hour() == 2 and time.localtime()[4] == 0:
-            if eu_dst_active(time.localtime()):
-                update_config_file({"dst": 1})
-            else:
-                update_config_file({"dst": 0})
+            dst_status = eu_dst_active(time.localtime())
+            dst_value = 1 if dst_status else 0
+            if config.dst != dst_value:
+                update_config_file({"dst": dst_value})
+                print(f'[+] DST updated at 2:00: {dst_status}')
 
         # Check for scheduled sleeping time
         if config.power and config.sleep:
             # Turn off at sleep time
             if local_hour() == config.sleep_time[0] and config.on:
                 config.on = False
+                wc.reload_config()
                 print(f'[+] Sleep mode activated.')
             # Turn on at wake time
             elif local_hour() == config.sleep_time[1] and not config.on:
                 config.on = True
+                wc.reload_config()
                 print(f'[+] Sleep mode deactivated.')
 
         # Sleep at second 0 for 1 minute

@@ -2,6 +2,8 @@ import network
 import time
 import git_fetch
 import config
+import neopixel
+import machine
 import gc
 
 
@@ -27,13 +29,27 @@ def connect_wifi():
         time.sleep(0.2)
     print(f'connected with the IP http://{sta_if.ifconfig()[0]}')
 
+# Turn of
+debug_led = neopixel.NeoPixel(machine.Pin(config.data_pin, machine.Pin.OUT), 1)
+debug_led[0] = (255, 255, 255)  # White
+debug_led.write()
+
+connect_wifi()
+debug_led[0] = (0, 255, 0)  # Green
+debug_led.write()
+time.sleep(1)
+
 # Check for updates in repo
 try:
     print("[>] Checking for updates...")
     if config.ota and not git_fetch.status():
         print("[>] Pulling files form git. This can take a while...")
+        debug_led[0] = (0, 0, 255)  # Blue
+        debug_led.write()
         git_fetch.pull()
 except Exception as e:
     print(f'[!] {e}')
-connect_wifi()
+    debug_led[0] = (255, 0, 0)  # Red
+    debug_led.write()
+    time.sleep(1)
 gc.collect()

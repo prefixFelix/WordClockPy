@@ -1,4 +1,4 @@
-version = "1.2"
+version = "1.3"
 import language as language_file
 
 wifi_ssid = 'SET_HERE'
@@ -10,7 +10,7 @@ subnet_mask = '255.255.255.0'   # Usually this for home networks
 gateway = '192.168.0.1'         # Your router's IP
 dns = '9.9.9.9'                 # DNS server (Quad9)
 
-ota = False                      # Fetch updates from github automatically
+ota = False                     # Fetch updates from github automatically
 data_pin = 22                   # GPIO of the LED data pin
 time_zone = 1                   # Timezone hour offset from UTC
 dst = 0                         # 1 if daylight-saving-time is active
@@ -23,7 +23,7 @@ transition = 'concurrent_fade'              # Fade mode: None, concurrent_fade, 
 transition_duration = 0.01                  # Time between each fade step
 transition_smoothness = 0.002               # Dimming rate between each fade step
 
-orientation = 'vertical'                  # vertical, horizontal
+orientation = 'vertical'                    # vertical, horizontal
 first_led = 'top_left'                      # top_left, top_right, bottom_left, bottom_right
 x_max = 11                                  # LED count x-axis
 y_max = 10                                  # LED count y-axis
