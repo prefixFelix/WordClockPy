@@ -1,5 +1,5 @@
 # Language presets. Should not been edited.
-# todo replace config.language in wordclock.py
+
 lang_german = {
     # 0 column  10
     # ESKISTAFÜNF 0

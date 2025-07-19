@@ -1,7 +1,9 @@
+import gc
 import time
 import machine
 import neopixel
-import dev_config as config
+import sys
+import config
 
 correction = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -31,6 +33,7 @@ class WordClock:
         self.display = set()
 
     def get_minute_indices(self):
+        # Minutes are displayed clockwise
         if config.orientation == 'vertical':
             corners = [0, config.y_max + 1, (config.y_max * (config.x_max - 1)) + 2, (config.y_max * config.x_max) + 3]
 
@@ -90,20 +93,23 @@ class WordClock:
         # O clock & it is
         if config.show_it_is:
             cords.append(config.language['it_is'])
-        if 0 <= minute < 5:
+        if 0 <= minute < 5 and config.show_oclock:
             cords.append(config.language['o_clock'])
 
-        # Set minute (direct indices, not cords!) todo maybe switch
+        # Set minute (direct indices, not cords!)
         if config.show_minutes:
             minute_digit = minute % 10
             if minute_digit in (0, 5):  # 0, 5
                 pass
             if minute_digit in (1, 6):  # 1
-                minute_indi_l = set([self.minute_indices[0]])
+                minute_indi_l = {self.minute_indices[0]}
             if minute_digit in (2, 7):  # 2
                 minute_indi_l = set(self.minute_indices[0:2])
             if minute_digit in (3, 8):  # 3
-                minute_indi_l = set(self.minute_indices[0:3])
+                if config.minute_clockwise:
+                    minute_indi_l = set(self.minute_indices[0:2] + [self.minute_indices[3]])
+                else:
+                    minute_indi_l = set(self.minute_indices[0:3])
             if minute_digit in (4, 9):  # 4
                 minute_indi_l = set(self.minute_indices[0:4])
 
@@ -253,7 +259,7 @@ class WordClock:
 
         print(f'\t[~] On indices: {display_on}')
         print(f'\t[~] Off indices: {display_off}')
-
+        gc.collect()
         if config.transition:
             if config.transition == 'concurrent_fade':
                 b = 0
@@ -307,6 +313,17 @@ class WordClock:
                 self.strip[index_off] = (0, 0, 0, 0) if len(config.color) == 4 else (0, 0, 0)
             self.strip.write()
 
-    def refresh_color_brightness(self):
-        for index in self.display:
-            self.strip[index] = self.get_color_brightness(config.color, config.brightness)
+    def refresh_color_brightness(self, display_set=None, color=None):
+        if display_set is None:
+            display_set = self.display
+        if color is None:
+            color = config.color
+        for index in display_set:
+            self.strip[index] = self.get_color_brightness(color, config.brightness)
+            self.strip.write()
+
+    def reload_config(self):
+        """ Reload config module to get updated values """
+        sys.modules.pop("config", None)
+        global config
+        import config

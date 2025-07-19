@@ -1,0 +1,218 @@
+
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WordClockPy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1 class="title">WordClockPy</h1>
+        <div class="header-controls">
+            <button class="restart-btn" id="restart-btn" title="Restart Device">
+                <i class="fas fa-redo"></i>
+            </button>
+            <label class="switch">
+                <input type="checkbox" id="power-toggle" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Brightness & Color Card -->
+    <div class="card">
+        <div class="slider-container">
+            <label class="control-label">
+                <i class="fas fa-sun"></i> Brightness
+            </label>
+            <input type="range" id="brightness-slider" min="0" max="100" value="75">
+            <div class="slider-value"><span id="brightness-value">75</span>%</div>
+        </div>
+
+        <div id="color-picker-section" class="hidden">
+            <label class="control-label mb-xl">
+                <i class="fas fa-palette"></i> Color Picker
+            </label>
+            
+            <div class="slider-container mb-xl">
+                <div class="slider-relative">
+                    <span class="slider-label">Base color</span>
+                    <input type="range" id="hue-slider" min="0" max="360" value="0">
+                </div>
+            </div>
+
+            <div class="slider-container mb-sm">
+                <div class="slider-relative">
+                    <span class="slider-label">Saturation</span>
+                    <input type="range" id="saturation-slider" min="0" max="100" value="100">
+                    <div class="slider-value"><span id="saturation-value">100</span>%</div>
+                </div>
+            </div>
+
+            <div class="slider-container hidden mb-sm" id="white-container">
+                <div class="slider-relative">
+                    <span class="slider-label">White</span>
+                    <input type="range" id="white-slider" min="0" max="255" value="0">
+                    <div class="slider-value"><span id="white-value">0</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slider-container mb-lg" id="temp-container">
+            <label class="control-label">
+                <i class="fas fa-temperature-half"></i> Color Temperature
+            </label>
+            <input type="range" id="temp-slider" min="0" max="100" value="50">
+            <div class="temp-labels">
+                <span style="color: #88ccff;">Cold White</span>
+                <span style="color: #ffffff;">Natural</span>
+                <span style="color: #ffaa00;">Warm White</span>
+            </div>
+        </div>
+
+        <div class="color-container" id="color-inputs-container">
+            <!-- Color inputs will be dynamically generated -->
+        </div>
+
+        <div class="flex-center">
+            <div id="color-preview" class="color-preview"></div>
+        </div>
+    </div>
+
+    <!-- Layout Card -->
+    <div class="card">
+        <label class="control-label">
+            <i class="fas fa-table-columns"></i> Layout
+        </label>
+        <div class="checkbox-container">
+            <input type="checkbox" id="show-it-is" checked>
+            <label for="show-it-is">Show "IT IS"</label>
+        </div>
+        <div class="checkbox-container">
+            <input type="checkbox" id="show-minutes" checked>
+            <label for="show-minutes">Show minutes</label>
+        </div>
+        <div class="checkbox-container">
+            <input type="checkbox" id="show-oclock" checked>
+            <label for="show-oclock">Show O'clock</label>
+        </div>
+        <div class="checkbox-container">
+            <input type="checkbox" id="minute-clockwise" checked>
+            <label for="minute-clockwise">Show minutes clockwise</label>
+        </div>
+    </div>
+
+    <!-- Transition Card -->
+    <div class="card">
+        <label class="control-label">
+            <i class="fas fa-exchange-alt"></i> Transition
+        </label>
+        <div class="mb-md">
+            <label for="transition-select" class="text-small">Type</label>
+            <select id="transition-select">
+                <option value="none">None</option>
+                <option value="concurrent_fade">Concurrent Fade</option>
+                <option value="successive_fade">Successive Fade</option>
+            </select>
+        </div>
+        
+        <div class="grid-2col">
+            <div>
+                <label for="transition-duration" class="text-small">Duration (s)</label>
+                <input type="number" id="transition-duration" min="0" max="10" step="0.01" value="0.05">
+            </div>
+            <div>
+                <label for="transition-smoothness" class="text-small">Smoothness</label>
+                <input type="number" id="transition-smoothness" min="0" max="1" step="0.0001" value="0.0039">
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule Card -->
+    <div class="card">
+        <label class="control-label">
+            <i class="fas fa-clock"></i> Schedule
+        </label>
+        <div class="checkbox-container mb-md">
+            <input type="checkbox" id="schedule-enabled">
+            <label for="schedule-enabled">Schedule enabled</label>
+        </div>
+
+        <div class="grid-2col">
+            <div>
+                <label for="start-time" class="text-small">Start Time</label>
+                <input type="number" id="start-time" min="0" max="24" value="8">
+            </div>
+            <div>
+                <label for="end-time" class="text-small">End Time</label>
+                <input type="number" id="end-time" min="0" max="24" value="22">
+            </div>
+        </div>
+    </div>
+
+    <!-- Misc Card -->
+    <div class="card">
+        <label class="control-label">
+            <i class="fas fa-cog"></i> Misc
+        </label>
+        
+        <div class="checkbox-container">
+            <input type="checkbox" id="ota-update">
+            <label for="ota-update">OTA update enabled</label>
+        </div>
+        <div class="checkbox-container mb-md">
+            <input type="checkbox" id="gamma-correction">
+            <label for="gamma-correction">Gamma correction enabled</label>
+        </div>
+        
+        <div class="mb-sm">
+            <label for="wifi-ssid" class="text-small">SSID</label>
+            <input type="text" id="wifi-ssid">
+        </div>
+        <div class="mb-md">
+            <label for="wifi-password" class="text-small">Password</label>
+            <input type="password" id="wifi-password">
+        </div>
+        
+        <div class="checkbox-container mb-sm">
+            <input type="checkbox" id="static-ip">
+            <label for="static-ip">Static IP enabled</label>
+        </div>
+        
+        <div class="grid-2col-sm">
+            <div>
+                <label for="device-ip" class="text-small">IP</label>
+                <input type="text" id="device-ip" class="static-ip-field">
+            </div>
+            <div>
+                <label for="subnet-mask" class="text-small">Subnet Mask</label>
+                <input type="text" id="subnet-mask" class="static-ip-field">
+            </div>
+            <div>
+                <label for="gateway" class="text-small">Gateway</label>
+                <input type="text" id="gateway" class="static-ip-field">
+            </div>
+            <div>
+                <label for="dns" class="text-small">DNS</label>
+                <input type="text" id="dns" class="static-ip-field">
+            </div>
+        </div>
+    </div>
+
+    <!-- Save Button -->
+    <button class="save-btn">
+        <i class="fas fa-save"></i> Save Settings
+    </button>
+
+    <!-- Footer -->
+    <div class="footer">
+        &lt;/&gt; by <a href="https://github.com/prefixFelix" target="_blank">prefixFelix</a><br>
+        Version <span id="version-number">1.0</span>
+    </div>
+
+    <script src="/assets/script.js"></script>
+</body>
+</html>

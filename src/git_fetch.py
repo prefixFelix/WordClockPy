@@ -1,11 +1,11 @@
-import dev_config as config
+import config
 import urequests
 import json
 import os
 
 user = 'prefixFelix'
 repo = 'WordClockPy'
-ignore_files = ['git_fetch.py', 'dev_config.py', 'boot.py']
+ignore_files = ['git_fetch.py', 'config.py', 'boot.py', 'language.py']
 
 
 def status():
@@ -119,10 +119,10 @@ def _create_dirs(file_path):
 def _update_version(new_version):
     """Update version in config file"""
     try:
-        with open('dev_config.py', 'r') as f:
+        with open('config.py', 'r') as f:
             lines = f.readlines()
         lines[0] = f'version = "{new_version}"\n'
-        with open('dev_config.py', 'w') as f:
+        with open('config.py', 'w') as f:
             for line in lines:
                 f.write(line)
     except Exception as e:
