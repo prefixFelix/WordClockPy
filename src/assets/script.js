@@ -11,7 +11,7 @@ let currentLedType = 'RGBW';
 const Config = {
     // Static configuration for debugging
     staticConfig: {
-        version: '1.2',
+        version: '1.4',
         power: true,
         brightness: 1.0,
         color: [0, 0, 0, 255],
