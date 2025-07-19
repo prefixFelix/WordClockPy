@@ -143,11 +143,13 @@ async def run_clock():
             # Turn off at sleep time
             if local_hour() == config.sleep_time[0] and config.on:
                 config.on = False
+                reload_config()
                 wc.reload_config()
                 print(f'[+] Sleep mode activated.')
             # Turn on at wake time
             elif local_hour() == config.sleep_time[1] and not config.on:
                 config.on = True
+                reload_config()
                 wc.reload_config()
                 print(f'[+] Sleep mode deactivated.')
 
