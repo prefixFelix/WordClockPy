@@ -18,7 +18,7 @@ Yet another **word clock** / **Wortuhr** project... For a more battle-tested sof
 
 ## Screenshots
 
-Depending on the led type, the color selection in the web interface also changes. The rest of the interface remains the same.
+Depending on the led type, the color selection in the web interface also changes. The rest of the interface remains the same. A complete screenshot can be found [here](img/full-web-interface.png).
 
 <p align="center">
 <img alt="color selection overview" src="img/interface-types.png"/>
