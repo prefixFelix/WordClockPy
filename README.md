@@ -9,7 +9,7 @@ Yet another **word clock** / **Wortuhr** project... For a more battle-tested sof
 
 - Supports very flexible led strip layouts
   - Any number of leds in X/Y direction
-  - Horizontal / vertical alignment1
+  - Horizontal / vertical alignment
   - Use any corner of the clock as your first led
 - Support for RGB, RGBW and WWA led strips
 - Responsive web interface
